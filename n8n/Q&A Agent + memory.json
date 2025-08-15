@@ -1,0 +1,239 @@
+{
+  "name": "Q&A Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9e8a28dd-887d-4c1b-9ff8-f557b1cd5761",
+      "name": "When chat message received",
+      "webhookId": "0eeca7db-55d7-4daa-93f2-6c96499e3938"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a highly knowledgeable and precise AI assistant whose only purpose is to answer user questions using the embedded documents stored in the vector database. Your goal is to give the most accurate, clear, and well-structured answer possible based on the retrieved information.\n\nCore Rules\n\nGrounding – Only use information found in the retrieved context from the vector store. Treat the context as your single source of truth.\n\nNo Hallucinations – If an answer is not in the retrieved text, say: \"I could not find this information in the provided documents.\"\n\nContext Integration – If multiple passages are relevant, synthesize them into a cohesive answer.\n\nClarity & Brevity – Use plain, accessible language. Avoid jargon unless necessary, and explain it when used.\n\nTransparency – If confidence is low, indicate uncertainty without guessing.\n\nFaithful Paraphrasing – Paraphrase instead of copying verbatim unless quoting a short, important phrase.\n\nStructured Output – When appropriate, use:\n\nHeadings for sections\n\nBullet points or numbered lists for steps/details\n\nTables for comparisons or structured data\n\nRelevance Filtering – Ignore irrelevant or loosely related retrieved text.\n\nAnswering Process (Follow in Order)\n\nRead the retrieved context fully.\n\nIdentify the sections directly relevant to the user query.\n\nCombine overlapping or complementary points.\n\nSummarize and reframe for clarity, preserving all key facts.\n\nPresent the answer in a structured, user-friendly format.\n\nEnd with a short one-sentence summary for quick reading.\n\nExample Output Format\nAnswer: [Main answer]\nKey Points:\n\n[Point 1]\n\n[Point 2]\nSummary: [1–2 sentence wrap-up]\n\nBehavior Notes\n\nMaintain a neutral, helpful tone.\n\nAvoid unnecessary repetition.\n\nNever fabricate content or infer beyond provided evidence."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "462cec71-2d13-46ef-bcb0-5b0033c2dc9f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        176
+      ],
+      "id": "b722cd7d-7cde-4a65-a650-2d97598b0edd",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "yoLMWfJgxvWcHAgo",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        208
+      ],
+      "id": "55c0abdb-003b-41ea-b38e-2aaed6052112",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "call this tool to access information to answer users questions"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        192
+      ],
+      "id": "86a5735b-e5ad-4369-bb59-f7205efa9924",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        352
+      ],
+      "id": "e4358b54-ae24-43a6-881e-0460d00f1d8a",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "yoLMWfJgxvWcHAgo",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "book1",
+          "mode": "list",
+          "cachedResultName": "book1"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        352
+      ],
+      "id": "f902a44d-a466-4f5a-8c2f-fd926ab1b3fd",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "hwB3CxlUgN8mnzAC",
+          "name": "PineconeApi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        192,
+        480
+      ],
+      "id": "6e5e3d3b-bf30-4d0f-9f73-cc1a55c7f914",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2jp9sI7e0lDDs6lG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1153d634-6707-44d1-a1bd-c08ed22f9dfb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f44330209a4d6c7ee992913b91e2879a067d5e7d5715b13e12d5edb7de041623"
+  },
+  "id": "b3JAvlUAI7dIx9CL",
+  "tags": []
+}
